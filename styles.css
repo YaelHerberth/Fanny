@@ -38,7 +38,7 @@ body {
 
 header {
     text-align: center;
-    padding: 6.25rem 1.25rem; /* 100px 20px */
+    padding: 6.25rem 0.25rem; /* 100px 20px */
     background-color: rgb(255, 91, 118); /* Rosa semi-transparente */
     color: #000000;
 }
@@ -51,6 +51,13 @@ h1 {
 h2 {
     font-size: 1.5rem; /* 24px */
     color: #000000;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+    width: 60%;
+    height: auto;
 }
 
 .parallax-section {
@@ -89,6 +96,7 @@ footer {
     color: #FFC0CB;
 }
 
+
 /* Media queries para responsive, prioridad en iPhone (375px ancho) */
 @media (max-width: 480px) {
     body {
@@ -119,4 +127,26 @@ footer {
     footer {
         padding: 2rem 1rem; /* Reducir padding */
     }
+}
+
+#contador {
+  display: flex;
+  gap: 20px;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  margin: 0 auto;
+  width: 60%;
+  height: auto;
+}
+
+#contador span {
+  font-size: 2rem;
+  font-weight: bold;
+  display: block;
+}
+
+#contador p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #666;
 }
