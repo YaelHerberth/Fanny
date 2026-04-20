@@ -6,6 +6,7 @@ body {
     color: #000000; /* Negro */
     overflow-x: hidden;
     font-size: 16px; /* Base font size */
+    font-family: "Montserrat", Helvetica, sans-serif;
 }
 
 #hearts-container {
