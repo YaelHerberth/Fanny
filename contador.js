@@ -1,8 +1,8 @@
 // Define la fecha de inicio (Año, Mes [0-11], Día, Hora, Minuto)
 // Nota: Enero es 0, Diciembre es 11.
-const fechaInicio1 = new Date('2025-08-19T00:00:00').getTime();
-const fechaInicio2 = new Date('2025-10-15T00:00:00').getTime();
-const fechaInicio3 = new Date('2025-11-06T00:00:00').getTime();
+const fechaInicio1 = new Date('2025-08-19T16:00:00').getTime();
+const fechaInicio2 = new Date('2025-10-15T20:15:00').getTime();
+const fechaInicio3 = new Date('2025-11-06T18:30:00').getTime();
 
 function actualizarContador1() {
   const ahora = new Date().getTime();
