@@ -1,66 +1,60 @@
-// Define la fecha de inicio (Año, Mes [0-11], Día, Hora, Minuto)
-// Nota: Enero es 0, Diciembre es 11.
-const fechaInicio1 = new Date('2025-08-19T16:00:00').getTime();
-const fechaInicio2 = new Date('2025-10-15T20:15:00').getTime();
-const fechaInicio3 = new Date('2025-11-06T18:30:00').getTime();
+// Contadores de la línea de tiempo.
+// Cada <li class="milestone"> tiene su fecha en data-fecha (formato AAAA-MM-DDTHH:MM:SS).
+(function () {
+  const UNIDADES = [
+    { key: 'dias', label: 'Días' },
+    { key: 'horas', label: 'Horas' },
+    { key: 'minutos', label: 'Minutos' },
+    { key: 'segundos', label: 'Segundos' },
+  ];
 
-function actualizarContador1() {
-  const ahora = new Date().getTime();
-  const diferencia = ahora - fechaInicio1;
+  const formatoFecha = new Intl.DateTimeFormat('es-MX', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  });
 
-  // Cálculos matemáticos para convertir milisegundos
-  const dias1 = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-  const horas1 = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutos1 = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
-  const segundos1 = Math.floor((diferencia % (1000 * 60)) / 1000);
+  const contadores = [...document.querySelectorAll('.milestone')].map((el) => {
+    const inicio = new Date(el.dataset.fecha);
+    el.querySelector('.milestone__date').textContent = formatoFecha.format(inicio);
 
-  // Inyectar los valores en el HTML
-  document.getElementById('dias1').innerText = dias1;
-  document.getElementById('horas1').innerText = horas1.toString().padStart(2, '0');
-  document.getElementById('minutos1').innerText = minutos1.toString().padStart(2, '0');
-  document.getElementById('segundos1').innerText = segundos1.toString().padStart(2, '0');
-}
+    const counter = el.querySelector('.counter');
+    const spans = {};
+    UNIDADES.forEach(({ key, label }) => {
+      const box = document.createElement('div');
+      box.className = 'counter__unit';
+      box.innerHTML = `<span class="counter__value">00</span><span class="counter__label">${label}</span>`;
+      counter.appendChild(box);
+      spans[key] = box.querySelector('.counter__value');
+    });
 
-function actualizarContador2() {
-  const ahora = new Date().getTime();
-  const diferencia = ahora - fechaInicio2;
+    return { inicio: inicio.getTime(), spans };
+  });
 
-  // Cálculos matemáticos para convertir milisegundos
-  const dias2 = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-  const horas2 = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutos2 = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
-  const segundos2 = Math.floor((diferencia % (1000 * 60)) / 1000);
+  function calcular(diferencia) {
+    const s = Math.max(0, Math.floor(diferencia / 1000));
+    return {
+      dias: String(Math.floor(s / 86400)),
+      horas: String(Math.floor((s % 86400) / 3600)).padStart(2, '0'),
+      minutos: String(Math.floor((s % 3600) / 60)).padStart(2, '0'),
+      segundos: String(s % 60).padStart(2, '0'),
+    };
+  }
 
-  // Inyectar los valores en el HTML
-  document.getElementById('dias2').innerText = dias2;
-  document.getElementById('horas2').innerText = horas2.toString().padStart(2, '0');
-  document.getElementById('minutos2').innerText = minutos2.toString().padStart(2, '0');
-  document.getElementById('segundos2').innerText = segundos2.toString().padStart(2, '0');
-}
+  function actualizar() {
+    const ahora = Date.now();
+    contadores.forEach(({ inicio, spans }) => {
+      const valores = calcular(ahora - inicio);
+      Object.entries(valores).forEach(([key, valor]) => {
+        const span = spans[key];
+        if (span.textContent === valor) return;
+        span.textContent = valor;
+        // Pequeño "flip" cuando cambia el número
+        if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          gsap.fromTo(span, { yPercent: -40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: 'back.out(2)' });
+        }
+      });
+    });
+  }
 
-function actualizarContador3() {
-  const ahora = new Date().getTime();
-  const diferencia = ahora - fechaInicio3;
-
-  // Cálculos matemáticos para convertir milisegundos
-  const dias3 = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-  const horas3 = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutos3 = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
-  const segundos3 = Math.floor((diferencia % (1000 * 60)) / 1000);
-
-  // Inyectar los valores en el HTML
-  document.getElementById('dias3').innerText = dias3;
-  document.getElementById('horas3').innerText = horas3.toString().padStart(2, '0');
-  document.getElementById('minutos3').innerText = minutos3.toString().padStart(2, '0');
-  document.getElementById('segundos3').innerText = segundos3.toString().padStart(2, '0');
-}
-
-// Ejecutar la función cada segundo
-setInterval(actualizarContador1, 1000);
-setInterval(actualizarContador2, 1000);
-setInterval(actualizarContador3, 1000);
-
-// Ejecutar una vez al cargar para evitar el retraso de 1 segundo
-actualizarContador1();
-actualizarContador2();
-actualizarContador3();
+  actualizar();
+  setInterval(actualizar, 1000);
+})();
